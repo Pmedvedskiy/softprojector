@@ -851,6 +851,8 @@ void Settings::loadSettings()
                     spMain.bibleHiddenSplitter = textToByt(v);
                 else if(n=="bibleShowSplitter")
                     spMain.bibleShowSplitter = textToByt(v);
+                else if(n=="bibleColumnsSplitter")
+                    spMain.bibleColumnsSplitter = textToByt(v);
                 else if(n=="songSplitter")
                     spMain.songSplitter = textToByt(v);
                 else if(n=="uiTranslation")
@@ -989,6 +991,7 @@ void Settings::saveSettings()
     spset += "spSplitter = " + spMain.spSplitter.toHex();
     spset += "\nbibleHiddenSplitter = " + spMain.bibleHiddenSplitter.toHex();
     spset += "\nbibleShowSplitter = " + spMain.bibleShowSplitter.toHex();
+    spset += "\nbibleColumnsSplitter = " + spMain.bibleColumnsSplitter.toHex();
     spset += "\nsongSplitter = " + spMain.songSplitter.toHex();
     spset += "\nuiTranslation = " + spMain.uiTranslation;
     if(spMain.isWindowMaximized)

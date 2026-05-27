@@ -329,6 +329,7 @@ public:
     QByteArray spSplitter;
     QByteArray bibleHiddenSplitter;
     QByteArray bibleShowSplitter;
+    QByteArray bibleColumnsSplitter;
     QByteArray songSplitter;
     bool isWindowMaximized;
     QString uiTranslation;

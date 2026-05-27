@@ -50,8 +50,10 @@ public:
 public slots:
     QByteArray getHiddenSplitterState();
     QByteArray getShownSplitterState();
+    QByteArray getColumnsSplitterState();
     void setHiddenSplitterState(QByteArray& state);
     void setShownSplitterState(QByteArray& state);
+    void setColumnsSplitterState(QByteArray& state);
     void loadBibles(QString initialId);
     void sendToProjector(bool add_to_history);
     void setSettings(BibleVersionSettings& sets);

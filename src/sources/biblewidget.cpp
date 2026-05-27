@@ -43,6 +43,13 @@ BibleWidget::BibleWidget(QWidget *parent) :
 
     highlight = new HighlighterDelegate(ui->search_results_list);
     ui->search_results_list->setItemDelegate(highlight);
+
+    // Default column proportions: Book | Chapter | Verse
+    // Used only when no persisted splitter state exists yet.
+    ui->columns_splitter->setSizes(QList<int>() << 220 << 60 << 600);
+    ui->columns_splitter->setStretchFactor(0, 0);
+    ui->columns_splitter->setStretchFactor(1, 0);
+    ui->columns_splitter->setStretchFactor(2, 1);
 }
 
 BibleWidget::~BibleWidget()
@@ -520,6 +527,17 @@ void BibleWidget::setHiddenSplitterState(QByteArray& state)
 void BibleWidget::setShownSplitterState(QByteArray& state)
 {
     shown_splitter_state = state;
+}
+
+QByteArray BibleWidget::getColumnsSplitterState()
+{
+    return ui->columns_splitter->saveState();
+}
+
+void BibleWidget::setColumnsSplitterState(QByteArray& state)
+{
+    if(!state.isEmpty())
+        ui->columns_splitter->restoreState(state);
 }
 
 BibleHistory BibleWidget::getCurrentVerse()

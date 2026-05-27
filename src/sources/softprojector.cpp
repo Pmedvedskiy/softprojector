@@ -376,6 +376,7 @@ void SoftProjector::saveSettings()
     mySettings.spMain.spSplitter = ui->splitter->saveState();
     mySettings.spMain.bibleHiddenSplitter = bibleWidget->getHiddenSplitterState();
     mySettings.spMain.bibleShowSplitter = bibleWidget->getShownSplitterState();
+    mySettings.spMain.bibleColumnsSplitter = bibleWidget->getColumnsSplitterState();
     mySettings.spMain.songSplitter = songWidget->getSplitterState();
 
     // Save window maximized state
@@ -431,6 +432,7 @@ void SoftProjector::applySetting(GeneralSettings &g, Theme &t, SlideShowSettings
     ui->splitter->restoreState(mySettings.spMain.spSplitter);
     bibleWidget->setHiddenSplitterState(mySettings.spMain.bibleHiddenSplitter);
     bibleWidget->setShownSplitterState(mySettings.spMain.bibleShowSplitter);
+    bibleWidget->setColumnsSplitterState(mySettings.spMain.bibleColumnsSplitter);
     songWidget->setSplitterState(mySettings.spMain.songSplitter);
 
     // Apply window maximized
