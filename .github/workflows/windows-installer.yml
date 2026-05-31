@@ -1,0 +1,90 @@
+name: Windows Installer
+
+# Builds SoftProjector on a Windows runner, deploys the Qt runtime with
+# windeployqt, packages an Inno Setup installer named
+# SoftProjector_<version>_WinInstaller.exe, and:
+#   - on a pushed tag like v2.2  -> attaches it to a GitHub Release
+#   - on manual dispatch         -> uploads it as a downloadable build artifact
+#
+# Note: this is fork-only packaging. It cannot be run/verified from the Linux
+# dev environment; trigger it via the Actions tab (Run workflow) to test.
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version string for the installer name (e.g. 2.2)'
+        required: true
+        default: '2.2'
+
+permissions:
+  contents: write   # needed to attach the installer to a Release
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Determine version
+        id: ver
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            v="${GITHUB_REF_NAME#v}"      # strip leading 'v' from the tag
+          else
+            v="${{ github.event.inputs.version }}"
+          fi
+          echo "version=$v" >> "$GITHUB_OUTPUT"
+          echo "Building installer for version $v"
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.8.3'
+          host: windows
+          target: desktop
+          arch: win64_msvc2022_64
+          modules: 'qtmultimedia'
+
+      - name: Set up MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Build (release)
+        shell: cmd
+        run: |
+          cd src
+          qmake softProjector.pro CONFIG+=release
+          nmake
+
+      - name: Deploy Qt runtime (windeployqt)
+        shell: cmd
+        run: |
+          windeployqt --release --qmldir src\qml src\win32_build\bin\SoftProjector.exe
+
+      - name: Install Inno Setup
+        shell: cmd
+        run: choco install innosetup -y --no-progress
+
+      - name: Build installer
+        shell: cmd
+        run: |
+          "%ProgramFiles(x86)%\Inno Setup 6\ISCC.exe" /DAppVersion=${{ steps.ver.outputs.version }} packaging\windows\softprojector.iss
+
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SoftProjector_${{ steps.ver.outputs.version }}_WinInstaller
+          path: packaging/windows/output/*.exe
+          if-no-files-found: error
+
+      - name: Attach installer to GitHub Release
+        if: github.event_name == 'push'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: packaging/windows/output/*.exe
