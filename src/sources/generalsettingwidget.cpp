@@ -20,6 +20,10 @@
 #include "../headers/generalsettingwidget.hpp"
 #include "ui_generalsettingwidget.h"
 
+// UI scale presets shown in comboBoxUiScale, by combo index.
+// Read at startup in main.cpp via QSettings("SoftProjector","SoftProjector").
+static const QList<qreal> uiScaleFactors = {0.75, 1.0, 1.25, 1.5, 1.75, 2.0};
+
 GeneralSettingWidget::GeneralSettingWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::GeneralSettingWidget)
@@ -157,6 +161,14 @@ void GeneralSettingWidget::loadSettings()
     ui->comboBoxControlsAlignV->setCurrentIndex(mySettings.displayControls.alignmentV);
     ui->comboBoxControlsAlignH->setCurrentIndex(mySettings.displayControls.alignmentH);
     ui->horizontalSliderOpacity->setValue(mySettings.displayControls.opacity*100);
+
+    // UI scale: select the preset matching the saved factor, defaulting to 100%
+    QSettings spSettings("SoftProjector", "SoftProjector");
+    qreal uiScale = spSettings.value("uiScaleFactor", 1.0).toReal();
+    int scaleIndex = uiScaleFactors.indexOf(uiScale);
+    if(scaleIndex == -1)
+        scaleIndex = uiScaleFactors.indexOf(1.0);
+    ui->comboBoxUiScale->setCurrentIndex(scaleIndex);
 }
 
 void GeneralSettingWidget::loadThemes()
@@ -360,5 +372,16 @@ void GeneralSettingWidget::on_checkBoxUseDarkTheme_clicked()
         settings.setValue("SoftProjectorUseLightTheme", 1);
     QMessageBox msgBox;
     msgBox.setText("Re-launch the application for the changes to take place.");
+    msgBox.exec();
+}
+
+void GeneralSettingWidget::on_comboBoxUiScale_activated(int index)
+{
+    if(index < 0 || index >= uiScaleFactors.size())
+        return;
+    QSettings spSettings("SoftProjector", "SoftProjector");
+    spSettings.setValue("uiScaleFactor", uiScaleFactors.at(index));
+    QMessageBox msgBox;
+    msgBox.setText(tr("Re-launch the application for the changes to take place."));
     msgBox.exec();
 }

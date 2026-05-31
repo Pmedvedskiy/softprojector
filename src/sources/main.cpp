@@ -109,6 +109,21 @@ bool connect(QString database_file)
 
 int main(int argc, char *argv[])
 {
+    // Apply the saved operator-window UI scale before QApplication is created.
+    // QT_SCALE_FACTOR only takes effect when set before QApplication exists,
+    // which is before the sqlite settings database is opened. That is why this
+    // value lives in QSettings rather than the sqlite Settings table.
+    {
+        QSettings spSettings("SoftProjector", "SoftProjector");
+        qreal uiScale = spSettings.value("uiScaleFactor", 1.0).toReal();
+        if(uiScale < 0.5)
+            uiScale = 0.5;
+        else if(uiScale > 3.0)
+            uiScale = 3.0;
+        if(!qFuzzyCompare(uiScale, 1.0))
+            qputenv("QT_SCALE_FACTOR", QByteArray::number(uiScale));
+    }
+
     QApplication a(argc, argv);
     a.setApplicationName("SoftProjector");
 

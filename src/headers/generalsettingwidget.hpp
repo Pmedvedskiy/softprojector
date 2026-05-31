@@ -67,6 +67,7 @@ private slots:
     void on_pushButtonAddTheme_clicked();
     void on_comboBoxTheme_activated(int index);
     void on_checkBoxUseDarkTheme_clicked();
+    void on_comboBoxUiScale_activated(int index);
 protected:
     virtual void changeEvent(QEvent *e);
 };
