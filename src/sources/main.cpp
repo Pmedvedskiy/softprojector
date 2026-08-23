@@ -138,79 +138,19 @@ int main(int argc, char *argv[])
     // Look for the database in all the same places that the QSql module will look,
     // and display a friendly error if it was not found:
     QString database_dir;
-#ifdef Q_WS_WIN
-    // If running on Windows, check if SoftProjector is Installed.
-    // If it is installed, then provide proper directory for database.
-    QDir d;
+#ifdef Q_OS_WIN
+    // When installed under Program Files the install folder is read-only for
+    // normal users, so keep the database in %ProgramData%\SoftProjector, which
+    // is shared by every Windows account on the machine. A portable copy run
+    // from anywhere else keeps the database next to the executable.
     QString cur_app_path = a.applicationDirPath();
-    //    if(cur_app_path.contains(QString("C:%1Program Files").arg(d.separator())))
-    if(cur_app_path.contains("C:/Program Files") || cur_app_path.contains("C:\\Program Files"))
+    database_dir = cur_app_path + QDir::separator();
+    if(cur_app_path.contains("Program Files", Qt::CaseInsensitive))
     {
-        // Check if it is on Windows Vista and Later or before Vista
-        bool is_vista = (QSysInfo::WindowsVersion >= QSysInfo::WV_VISTA);
-        if(is_vista)
-        {
-            d.cd(d.rootPath());
-            if(d.cd("ProgramData"))
-            {
-                // Check if 'SoftProjector directory exists, if not, create one
-                if(d.cd("SoftProjector"))
-                    database_dir = d.absolutePath() + d.separator();
-                else
-                {
-                    d.mkdir("SoftProjector");
-                    if(d.cd("SoftProjector"))
-                        database_dir = d.absolutePath() + d.separator();
-                    else
-                        database_dir = cur_app_path + d.separator();
-                }
-            }
-            else if(d.cd("Public"))
-            {
-                // Check if 'SoftProjector directory exists, if not, create one
-                if(d.cd("SoftProjector"))
-                    database_dir = d.absolutePath() + d.separator();
-                else
-                {
-                    d.mkdir("SoftProjector");
-                    if(d.cd("SoftProjector"))
-                        database_dir = d.absolutePath() + d.separator();
-                    else
-                        database_dir = cur_app_path + d.separator();
-                }
-            }
-            else
-                database_dir = cur_app_path + d.separator();
-        }
-        else
-        {
-            d.cd(d.homePath());
-            d.cdUp();
-            if(d.cd("All Users"))
-            {
-                if(d.cd("Application Data"))
-                {
-                    // Check if 'SoftProjector directory exists, if not, create one
-                    if(d.cd("SoftProjector"))
-                        database_dir = d.absolutePath() + d.separator();
-                    else
-                    {
-                        d.mkdir("SoftProjector");
-                        if(d.cd("SoftProjector"))
-                            database_dir = d.absolutePath() + d.separator();
-                        else
-                            database_dir = cur_app_path + d.separator();
-                    }
-                }
-                else
-                    database_dir = cur_app_path + d.separator();
-            }
-            else
-                database_dir = cur_app_path + d.separator();
-        }
+        QDir d(qEnvironmentVariable("ProgramData", "C:/ProgramData"));
+        if(d.exists() && (d.exists("SoftProjector") || d.mkdir("SoftProjector")) && d.cd("SoftProjector"))
+            database_dir = d.absolutePath() + QDir::separator();
     }
-    else
-        database_dir = cur_app_path + QDir::separator();
 #else
     database_dir = a.applicationDirPath() + QDir::separator();
 #endif
