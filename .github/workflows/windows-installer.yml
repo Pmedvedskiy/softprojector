@@ -65,7 +65,13 @@ jobs:
       - name: Deploy Qt runtime (windeployqt)
         shell: cmd
         run: |
-          windeployqt --release --qmldir src\qml src\win32_build\bin\SoftProjector.exe
+          windeployqt --release --compiler-runtime --qmldir src\qml src\win32_build\bin\SoftProjector.exe
+
+      - name: Add SoftProjector translations
+        shell: cmd
+        run: |
+          if not exist src\win32_build\bin\translations mkdir src\win32_build\bin\translations
+          copy /Y src\translations\softpro_*.qm src\win32_build\bin\translations\
 
       - name: Install Inno Setup
         shell: cmd

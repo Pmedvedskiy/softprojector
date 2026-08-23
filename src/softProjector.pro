@@ -33,7 +33,6 @@ TARGET = SoftProjector
 TEMPLATE = app
 CONFIG += x86 ppc x86_64 ppc64 # Compile a universal build
 
-win32: RC_ICONS = softprojector.ico # embed the app icon in the Windows .exe
 
 RES_DIR = $${PWD}/unknownsys_build
 win32: RES_DIR = $${PWD}/win32_build
