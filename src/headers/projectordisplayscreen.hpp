@@ -97,6 +97,7 @@ signals:
 
 protected:
     void keyReleaseEvent(QKeyEvent *event);
+    void showEvent(QShowEvent *event);
 
 private:
     Ui::ProjectorDisplayScreen *ui;

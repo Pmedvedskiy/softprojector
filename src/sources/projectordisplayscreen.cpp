@@ -20,6 +20,9 @@
 #include "../3rdparty/headers/qmediaplaylist.h"
 #include "../headers/projectordisplayscreen.hpp"
 #include "ui_projectordisplayscreen.h"
+#ifdef Q_OS_WIN
+#include <qpa/qplatformwindow_p.h>
+#endif
 
 
 ProjectorDisplayScreen::ProjectorDisplayScreen(QWidget *parent) :
@@ -262,6 +265,25 @@ void ProjectorDisplayScreen::videoDurationChanged(int duration)
 void ProjectorDisplayScreen::videoPlaybackStateChanged(int state)
 {
     emit videoPlaybackStateChanged((QMediaPlayer::PlaybackState)state);
+}
+
+void ProjectorDisplayScreen::showEvent(QShowEvent *event)
+{
+    QWidget::showEvent(event);
+#ifdef Q_OS_WIN
+    // Keep a WS_BORDER style on the fullscreen display window so Windows does
+    // not treat it as an exclusive fullscreen application. Without it, DWM
+    // switches the compositor to independent flip the first time the display
+    // opens, which briefly blanks the other monitor on PCs whose monitors run
+    // at different refresh rates. Costs a 1 px border on the display window.
+    if (QWindow *w = windowHandle())
+    {
+        if (auto *ww = w->nativeInterface<QNativeInterface::Private::QWindowsWindow>())
+        {
+            ww->setHasBorderInFullScreen(true);
+        }
+    }
+#endif
 }
 
 void ProjectorDisplayScreen::keyReleaseEvent(QKeyEvent *event)
