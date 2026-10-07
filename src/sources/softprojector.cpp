@@ -378,6 +378,7 @@ void SoftProjector::saveSettings()
     mySettings.spMain.bibleShowSplitter = bibleWidget->getShownSplitterState();
     mySettings.spMain.bibleColumnsSplitter = bibleWidget->getColumnsSplitterState();
     mySettings.spMain.songSplitter = songWidget->getSplitterState();
+    mySettings.spMain.bibleVerseListFontSize = bibleWidget->getVerseListFontSize();
 
     // Save window maximized state
     mySettings.spMain.isWindowMaximized = this->isMaximized();
@@ -434,6 +435,7 @@ void SoftProjector::applySetting(GeneralSettings &g, Theme &t, SlideShowSettings
     bibleWidget->setShownSplitterState(mySettings.spMain.bibleShowSplitter);
     bibleWidget->setColumnsSplitterState(mySettings.spMain.bibleColumnsSplitter);
     songWidget->setSplitterState(mySettings.spMain.songSplitter);
+    bibleWidget->setVerseListFontSize(mySettings.spMain.bibleVerseListFontSize);
 
     // Apply window maximized
     if(mySettings.spMain.isWindowMaximized)

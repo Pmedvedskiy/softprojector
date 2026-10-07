@@ -54,6 +54,8 @@ public slots:
     void setHiddenSplitterState(QByteArray& state);
     void setShownSplitterState(QByteArray& state);
     void setColumnsSplitterState(QByteArray& state);
+    int getVerseListFontSize();
+    void setVerseListFontSize(int pointSize);
     void loadBibles(QString initialId);
     void sendToProjector(bool add_to_history);
     void setSettings(BibleVersionSettings& sets);
@@ -83,6 +85,8 @@ private slots:
     void on_chapter_ef_textChanged(QString new_string);
     void on_verse_ef_textChanged(QString new_string);
     void on_btnLive_clicked();
+    void on_btnVerseTextBigger_clicked();
+    void on_btnVerseTextSmaller_clicked();
     void on_lineEditBook_textChanged(QString );
     void on_chapter_preview_list_doubleClicked(QModelIndex index);
     void on_chapter_preview_list_currentRowChanged(int currentRow);
@@ -99,6 +103,8 @@ private:
     QIntValidator *chapter_validator, *verse_validator;
     QByteArray hidden_splitter_state, shown_splitter_state;
     QButtonGroup search_type_buttongroup;
+    int verseListFontSize; // 0 = inherit the widget font
+    int currentVerseListPointSize();
 };
 
 #endif // BIBLEWIDGET_HPP

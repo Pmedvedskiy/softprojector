@@ -528,11 +528,24 @@ Results</string>
               </widget>
              </item>
              <item>
-              <layout class="QVBoxLayout" name="verticalLayout_5">
-               <property name="spacing">
-                <number>0</number>
+              <widget class="QToolButton" name="btnVerseTextSmaller">
+               <property name="toolTip">
+                <string>Smaller verse text</string>
                </property>
-              </layout>
+               <property name="text">
+                <string notr="true">A-</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QToolButton" name="btnVerseTextBigger">
+               <property name="toolTip">
+                <string>Larger verse text</string>
+               </property>
+               <property name="text">
+                <string notr="true">A+</string>
+               </property>
+              </widget>
              </item>
             </layout>
            </item>

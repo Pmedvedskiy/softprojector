@@ -333,6 +333,7 @@ public:
     QByteArray songSplitter;
     bool isWindowMaximized;
     QString uiTranslation;
+    int bibleVerseListFontSize; // 0 = normal font
 };
 
 class SlideShowSettings
