@@ -50,6 +50,7 @@ SOURCES += sources/main.cpp \
     sources/softprojector.cpp \
     sources/songwidget.cpp \
     sources/biblewidget.cpp \
+    sources/wheelguard.cpp \
     sources/editwidget.cpp \
     sources/song.cpp \
     sources/bible.cpp \
@@ -93,6 +94,7 @@ SOURCES += sources/main.cpp \
 HEADERS += headers/softprojector.hpp \
     headers/songwidget.hpp \
     headers/biblewidget.hpp \
+    headers/wheelguard.hpp \
     headers/editwidget.hpp \
     headers/song.hpp \
     headers/bible.hpp \

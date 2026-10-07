@@ -20,6 +20,7 @@
 #include <QtSql>
 #include "../headers/settingsdialog.hpp"
 #include "ui_settingsdialog.h"
+#include "../headers/wheelguard.hpp"
 
 SettingsDialog::SettingsDialog(QWidget *parent) :
     QDialog(parent),
@@ -39,6 +40,10 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui->scrollAreaSongSettings->setWidget(songSettingswidget);
     ui->scrollAreaPicture->setWidget(pictureSettingWidget);
     ui->scrollAreaAnnouncementSettings->setWidget(announcementSettingswidget);
+
+    // Wheel over a settings page scrolls it instead of editing the widget
+    // under the pointer.
+    WheelGuard::install(this);
 
     btnOk = new QPushButton(tr("OK"));
     btnCancel = new QPushButton(tr("Cancel"));
