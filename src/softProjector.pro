@@ -172,5 +172,4 @@ RESOURCES += softprojector.qrc
 
 win32 {
     RC_FILE = softprojector.rc
-    QT += gui-private   # qpa/qplatformwindow_p.h (fullscreen border flag)
 }

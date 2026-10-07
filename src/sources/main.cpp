@@ -21,6 +21,7 @@
 #include <QMessageBox>
 #include <QtSql>
 #include <QStyleFactory>
+#include <QQuickWindow>
 #include "../headers/softprojector.hpp"
 
 // Definitions for database versions 'dbVer' numbers
@@ -123,6 +124,16 @@ int main(int argc, char *argv[])
         if(!qFuzzyCompare(uiScale, 1.0))
             qputenv("QT_SCALE_FACTOR", QByteArray::number(uiScale));
     }
+
+    // Render the Qt Quick display window with OpenGL rather than the Direct3D
+    // default on Windows. With Direct3D, DWM can take a borderless window that
+    // covers a monitor into its exclusive "independent flip" path the first
+    // time it opens, which briefly blanked the other monitor on the church PC
+    // (two monitors at different refresh rates). v2.2.2 avoided that with a
+    // WS_BORDER frame on the display window, but the 1 px border showed on
+    // the projector. OpenGL content is composed by DWM like any other window.
+    // Linux already defaults to OpenGL, so this changes nothing there.
+    QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
 
     QApplication a(argc, argv);
     a.setApplicationName("SoftProjector");
