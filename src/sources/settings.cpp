@@ -756,7 +756,7 @@ SpSettings::SpSettings()
     // Apply main window defaults
     isWindowMaximized = false;
     uiTranslation = "en";
-    bibleVerseListFontSize = 0;
+    showListFontSize = 0;
 }
 
 BibleVersionSettings::BibleVersionSettings()
@@ -860,8 +860,8 @@ void Settings::loadSettings()
                     spMain.uiTranslation = v;
                 else if(n=="isWindowMaximized")
                     spMain.isWindowMaximized = (v=="true");
-                else if(n=="bibleVerseListFontSize")
-                    spMain.bibleVerseListFontSize = v.toInt();
+                else if(n=="showListFontSize")
+                    spMain.showListFontSize = v.toInt();
             }
         }
         else if(t == "bible1")
@@ -996,7 +996,7 @@ void Settings::saveSettings()
     spset += "\nbibleShowSplitter = " + spMain.bibleShowSplitter.toHex();
     spset += "\nbibleColumnsSplitter = " + spMain.bibleColumnsSplitter.toHex();
     spset += "\nsongSplitter = " + spMain.songSplitter.toHex();
-    spset += "\nbibleVerseListFontSize = " + QString::number(spMain.bibleVerseListFontSize);
+    spset += "\nshowListFontSize = " + QString::number(spMain.showListFontSize);
     spset += "\nuiTranslation = " + spMain.uiTranslation;
     if(spMain.isWindowMaximized)
         spset += "\nisWindowMaximized = true";

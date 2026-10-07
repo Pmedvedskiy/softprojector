@@ -61,6 +61,7 @@ SoftProjector::SoftProjector(QWidget *parent)
     mediaControls = new MediaControl(this);
 
     ui->setupUi(this);
+    showListZoom = new ListZoom(ui->listShow, ui->btnShowTextSmaller, ui->btnShowTextBigger, this);
 
     // Create action group for language slections
     languagePath = qApp->applicationDirPath()+QString(QDir::separator())+"translations"+QString(QDir::separator());
@@ -378,7 +379,7 @@ void SoftProjector::saveSettings()
     mySettings.spMain.bibleShowSplitter = bibleWidget->getShownSplitterState();
     mySettings.spMain.bibleColumnsSplitter = bibleWidget->getColumnsSplitterState();
     mySettings.spMain.songSplitter = songWidget->getSplitterState();
-    mySettings.spMain.bibleVerseListFontSize = bibleWidget->getVerseListFontSize();
+    mySettings.spMain.showListFontSize = showListZoom->fontSize();
 
     // Save window maximized state
     mySettings.spMain.isWindowMaximized = this->isMaximized();
@@ -435,7 +436,7 @@ void SoftProjector::applySetting(GeneralSettings &g, Theme &t, SlideShowSettings
     bibleWidget->setShownSplitterState(mySettings.spMain.bibleShowSplitter);
     bibleWidget->setColumnsSplitterState(mySettings.spMain.bibleColumnsSplitter);
     songWidget->setSplitterState(mySettings.spMain.songSplitter);
-    bibleWidget->setVerseListFontSize(mySettings.spMain.bibleVerseListFontSize);
+    showListZoom->setFontSize(mySettings.spMain.showListFontSize);
 
     // Apply window maximized
     if(mySettings.spMain.isWindowMaximized)

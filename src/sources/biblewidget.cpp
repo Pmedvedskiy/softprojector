@@ -33,7 +33,6 @@ BibleWidget::BibleWidget(QWidget *parent) :
     QWidget(parent), ui(new Ui::BibleWidget)
 {
     ui->setupUi(this);
-    verseListFontSize = 0;
     on_hide_result_button_clicked();
 
     chapter_validator = new QIntValidator(1, 1, ui->chapter_ef);
@@ -539,46 +538,6 @@ void BibleWidget::setColumnsSplitterState(QByteArray& state)
 {
     if(!state.isEmpty())
         ui->columns_splitter->restoreState(state);
-}
-
-// Text size of the verse list (right-hand column), changed with the A- / A+
-// buttons and saved with the window layout.
-namespace {
-const int minVerseListFontSize = 6;
-const int maxVerseListFontSize = 40;
-}
-
-int BibleWidget::getVerseListFontSize()
-{
-    return verseListFontSize;
-}
-
-void BibleWidget::setVerseListFontSize(int pointSize)
-{
-    QFont f; // attributes left unset keep inheriting from the widget font
-    if(pointSize > 0)
-    {
-        verseListFontSize = qBound(minVerseListFontSize, pointSize, maxVerseListFontSize);
-        f.setPointSize(verseListFontSize);
-    }
-    else
-        verseListFontSize = 0;
-    ui->chapter_preview_list->setFont(f);
-}
-
-int BibleWidget::currentVerseListPointSize()
-{
-    return QFontInfo(ui->chapter_preview_list->font()).pointSize();
-}
-
-void BibleWidget::on_btnVerseTextBigger_clicked()
-{
-    setVerseListFontSize(currentVerseListPointSize() + 1);
-}
-
-void BibleWidget::on_btnVerseTextSmaller_clicked()
-{
-    setVerseListFontSize(currentVerseListPointSize() - 1);
 }
 
 BibleHistory BibleWidget::getCurrentVerse()

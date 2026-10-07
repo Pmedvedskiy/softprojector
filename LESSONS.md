@@ -49,3 +49,8 @@
 **Rule:** Do not reintroduce `setHasBorderInFullScreen(true)` on the display window; the 1 px frame shows on the projector. The blackout workaround is now `QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL)` in `main.cpp`.
 **Why:** The v2.2.2 border fixed the mixed-refresh-rate blackout (or the user's "Disable fullscreen optimizations" compatibility tick did; they do not remember which) but the border was visible during verses, so it was removed on 2026-10-06. OpenGL cannot be verified from WSL.
 **How to apply:** If the blackout comes back on the church PC after this build, first tick "Disable fullscreen optimizations" on SoftProjector.exe (Properties, Compatibility); only if that fails, revert the main.cpp commit and look for another DWM-safe approach.
+
+## 2026-10-06 - "Right-most panel" means the live chapter panel of the main window, not the Bible tab
+**Rule:** When the user talks about the panel that shows the presented chapter or verse, that is `listShow` (header `labelShow`, radio `rbMultiVerse`) at the far right of the main window in `src/ui/softprojector.ui`. The Bible tab's `chapter_preview_list` is the browsing list and stays on what the operator is reading, which can be a different chapter.
+**Why:** The first version of the verse-list zoom (2026-10-06, f788eaf) put the A-/A+ buttons on the Bible tab's preview list. The user corrected it with a screenshot: they browse Luke 3 on the left while Mark 4 stays presented on the right, and the zoom belongs to the presented panel.
+**How to apply:** Any feature described as "where the current projected verse is", "the presented chapter", or "the right-most panel". The main window's `listShow` is shared by songs, announcements and pictures, so changes to it affect those too.

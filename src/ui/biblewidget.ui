@@ -527,26 +527,6 @@ Results</string>
                </property>
               </widget>
              </item>
-             <item>
-              <widget class="QToolButton" name="btnVerseTextSmaller">
-               <property name="toolTip">
-                <string>Smaller verse text</string>
-               </property>
-               <property name="text">
-                <string notr="true">A-</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QToolButton" name="btnVerseTextBigger">
-               <property name="toolTip">
-                <string>Larger verse text</string>
-               </property>
-               <property name="text">
-                <string notr="true">A+</string>
-               </property>
-              </widget>
-             </item>
             </layout>
            </item>
            <item>

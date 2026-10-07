@@ -95,6 +95,39 @@
             </property>
            </widget>
           </item>
+          <item>
+           <spacer name="horizontalSpacerShowZoom">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>10</width>
+              <height>10</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QToolButton" name="btnShowTextSmaller">
+            <property name="toolTip">
+             <string>Smaller text in the live panel</string>
+            </property>
+            <property name="text">
+             <string notr="true">A-</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="btnShowTextBigger">
+            <property name="toolTip">
+             <string>Larger text in the live panel</string>
+            </property>
+            <property name="text">
+             <string notr="true">A+</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
         <item>

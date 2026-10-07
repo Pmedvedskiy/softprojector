@@ -16,7 +16,8 @@ HEADERS += \
     $$SP/headers/bible.hpp \
     $$SP/headers/song.hpp \
     $$SP/headers/spfunctions.hpp \
-    $$SP/headers/settings.hpp
+    $$SP/headers/settings.hpp \
+    $$SP/headers/listzoom.hpp
 
 SOURCES += \
     $$SP/sources/biblewidget.cpp \
@@ -24,6 +25,7 @@ SOURCES += \
     $$SP/sources/highlight.cpp \
     $$SP/sources/song.cpp \
     $$SP/sources/spfunctions.cpp \
-    $$SP/sources/settings.cpp
+    $$SP/sources/settings.cpp \
+    $$SP/sources/listzoom.cpp
 
 FORMS += $$SP/ui/biblewidget.ui

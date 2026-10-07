@@ -40,6 +40,7 @@
 #include "videoinfo.hpp"
 #include "slideshoweditor.hpp"
 #include "schedule.hpp"
+#include "listzoom.hpp"
 
 class QActionGroup;
 
@@ -66,6 +67,7 @@ public:
     ~SoftProjector();
     SongWidget *songWidget;
     BibleWidget *bibleWidget;
+    ListZoom *showListZoom;
     AnnounceWidget *announceWidget;
     ManageDataDialog *manageDialog;
     EditWidget *editWidget;

@@ -1,7 +1,7 @@
-// Operator-window layout: the right-hand Bible column (chapter_preview_list)
-// gets its own text size, changed one point at a time with two buttons next
-// to "Go Live", and layout state (zoom size, splitter positions) survives a
-// restart through the window-layout settings.
+// Operator-window layout: the live chapter panel (listShow at the far right
+// of the main window) gets its own text size, changed one point at a time with
+// two buttons in its title row, and layout state (zoom size, splitter
+// positions) survives a restart through the window-layout settings.
 
 #include <QtTest>
 #include <QtSql>
@@ -11,6 +11,7 @@
 #include <QToolButton>
 
 #include "biblewidget.hpp"
+#include "listzoom.hpp"
 #include "settings.hpp"
 
 class LayoutTest : public QObject
@@ -50,111 +51,95 @@ void LayoutTest::init()
 
 namespace {
 
-struct Widgets
+// A list with its two zoom buttons, wired the way the main window wires listShow.
+struct ZoomedList
 {
-    QListWidget *list;
-    QToolButton *plus;
-    QToolButton *minus;
+    QListWidget list;
+    QToolButton minus;
+    QToolButton plus;
+    ListZoom zoom{&list, &minus, &plus};
+
+    int pointSize() const { return QFontInfo(list.font()).pointSize(); }
 };
-
-Widgets find(BibleWidget &w)
-{
-    return { w.findChild<QListWidget *>("chapter_preview_list"),
-             w.findChild<QToolButton *>("btnVerseTextBigger"),
-             w.findChild<QToolButton *>("btnVerseTextSmaller") };
-}
-
-int listPointSize(const Widgets &ui)
-{
-    return QFontInfo(ui.list->font()).pointSize();
-}
 
 } // namespace
 
 void LayoutTest::plusRaisesFontByOnePoint()
 {
-    BibleWidget w;
-    Widgets ui = find(w);
-    QVERIFY(ui.list && ui.plus && ui.minus);
-    int before = listPointSize(ui);
+    ZoomedList z;
+    int before = z.pointSize();
 
-    ui.plus->click();
+    z.plus.click();
 
-    QCOMPARE(listPointSize(ui), before + 1);
-    QCOMPARE(w.getVerseListFontSize(), before + 1);
+    QCOMPARE(z.pointSize(), before + 1);
+    QCOMPARE(z.zoom.fontSize(), before + 1);
 }
 
 void LayoutTest::minusLowersFontByOnePoint()
 {
-    BibleWidget w;
-    Widgets ui = find(w);
-    QVERIFY(ui.list && ui.plus && ui.minus);
-    int before = listPointSize(ui);
+    ZoomedList z;
+    int before = z.pointSize();
 
-    ui.minus->click();
+    z.minus.click();
 
-    QCOMPARE(listPointSize(ui), before - 1);
-    QCOMPARE(w.getVerseListFontSize(), before - 1);
+    QCOMPARE(z.pointSize(), before - 1);
+    QCOMPARE(z.zoom.fontSize(), before - 1);
 }
 
 void LayoutTest::plusStopsAtLargestSize()
 {
-    BibleWidget w;
-    Widgets ui = find(w);
-    w.setVerseListFontSize(40);
+    ZoomedList z;
+    z.zoom.setFontSize(40);
 
-    ui.plus->click();
+    z.plus.click();
 
-    QCOMPARE(listPointSize(ui), 40);
-    QCOMPARE(w.getVerseListFontSize(), 40);
+    QCOMPARE(z.pointSize(), 40);
+    QCOMPARE(z.zoom.fontSize(), 40);
 }
 
 void LayoutTest::minusStopsAtSmallestSize()
 {
-    BibleWidget w;
-    Widgets ui = find(w);
-    w.setVerseListFontSize(6);
+    ZoomedList z;
+    z.zoom.setFontSize(6);
 
-    ui.minus->click();
+    z.minus.click();
 
-    QCOMPARE(listPointSize(ui), 6);
-    QCOMPARE(w.getVerseListFontSize(), 6);
+    QCOMPARE(z.pointSize(), 6);
+    QCOMPARE(z.zoom.fontSize(), 6);
 }
 
 void LayoutTest::setterAppliesSizeToList()
 {
-    BibleWidget w;
-    Widgets ui = find(w);
+    ZoomedList z;
 
-    w.setVerseListFontSize(18);
+    z.zoom.setFontSize(18);
 
-    QCOMPARE(listPointSize(ui), 18);
-    QCOMPARE(w.getVerseListFontSize(), 18);
+    QCOMPARE(z.pointSize(), 18);
+    QCOMPARE(z.zoom.fontSize(), 18);
 }
 
 void LayoutTest::zeroRestoresDefaultFont()
 {
-    BibleWidget w;
-    Widgets ui = find(w);
-    int defaultSize = listPointSize(ui);
-    w.setVerseListFontSize(18);
+    ZoomedList z;
+    int defaultSize = z.pointSize();
+    z.zoom.setFontSize(18);
 
-    w.setVerseListFontSize(0);
+    z.zoom.setFontSize(0);
 
-    QCOMPARE(listPointSize(ui), defaultSize);
-    QCOMPARE(w.getVerseListFontSize(), 0);
+    QCOMPARE(z.pointSize(), defaultSize);
+    QCOMPARE(z.zoom.fontSize(), 0);
 }
 
 void LayoutTest::sizeSurvivesSettingsRoundTrip()
 {
     Settings saved;
-    saved.spMain.bibleVerseListFontSize = 18;
+    saved.spMain.showListFontSize = 18;
     saved.saveNewSettings();
 
     Settings loaded;
     loaded.loadSettings();
 
-    QCOMPARE(loaded.spMain.bibleVerseListFontSize, 18);
+    QCOMPARE(loaded.spMain.showListFontSize, 18);
 }
 
 void LayoutTest::missingKeyMeansDefaultSize()
@@ -166,7 +151,7 @@ void LayoutTest::missingKeyMeansDefaultSize()
     Settings loaded;
     loaded.loadSettings();
 
-    QCOMPARE(loaded.spMain.bibleVerseListFontSize, 0);
+    QCOMPARE(loaded.spMain.showListFontSize, 0);
 }
 
 void LayoutTest::columnWidthsSurviveSettingsRoundTrip()
