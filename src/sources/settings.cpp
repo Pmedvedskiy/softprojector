@@ -1058,5 +1058,7 @@ void Settings::saveNewSettings()
 
 QByteArray Settings::textToByt(QString text)
 {
-    return text.toUtf8();
+    // Splitter states are saved with toHex(); decode them again, otherwise
+    // restoreState() rejects the hex text and the layout never comes back.
+    return QByteArray::fromHex(text.toUtf8());
 }
