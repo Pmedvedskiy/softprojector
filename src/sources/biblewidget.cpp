@@ -339,7 +339,7 @@ void BibleWidget::on_search_button_clicked()
     int range = ui->comboBoxSearchRange->currentIndex();
 
     QRegularExpression rx, rxh;
-    rx.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
+    rx.setPatternOptions(QRegularExpression::CaseInsensitiveOption | QRegularExpression::UseUnicodePropertiesOption);
     search_text.replace(" ","\\W*");
     if(type == 0)
     {

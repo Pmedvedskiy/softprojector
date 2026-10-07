@@ -35,3 +35,10 @@ unknownsys_build/*
 win32_build/*
 unix_build/*
 mac_build/*
+
+# Test build directory
+tests/build/
+
+# Local Linux build tree and Qt installer log
+src/unix_build/
+aqtinstall.log

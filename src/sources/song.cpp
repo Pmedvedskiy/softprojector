@@ -28,7 +28,9 @@
 QString clean(QString str)
 {
     //Removes all none alphanumeric characters from the string
-    str.replace(QRegularExpression("[\\W*]")," ");
+    // Qt 6 QRegularExpression treats \w and \W as ASCII-only unless told to use
+    // Unicode properties, which would wipe out Cyrillic (or any non-Latin) text.
+    str.replace(QRegularExpression("[\\W*]", QRegularExpression::UseUnicodePropertiesOption), " ");
     str = str.simplified();
     return str;
 }

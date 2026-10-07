@@ -313,7 +313,7 @@ QList<BibleSearch> Bible::searchBible(bool allWords, QRegularExpression searchEx
                 bool hasAll = false;
                 for (int j(0);j<stl.count();++j)
                 {
-                    hasAll = bv.verseText.contains(QRegularExpression("\\b"+stl.at(j)+"\\b",QRegularExpression::CaseInsensitiveOption));
+                    hasAll = bv.verseText.contains(QRegularExpression("\\b"+stl.at(j)+"\\b",QRegularExpression::CaseInsensitiveOption | QRegularExpression::UseUnicodePropertiesOption));
                     if(!hasAll)
                         break;
                 }
@@ -348,7 +348,7 @@ QList<BibleSearch> Bible::searchBible(bool allWords, QRegularExpression searchEx
                 bool hasAll = false;
                 for (int j(0);j<stl.count();++j)
                 {
-                    hasAll = bv.verseText.contains(QRegularExpression("\\b"+stl.at(j)+"\\b",QRegularExpression::CaseInsensitiveOption));
+                    hasAll = bv.verseText.contains(QRegularExpression("\\b"+stl.at(j)+"\\b",QRegularExpression::CaseInsensitiveOption | QRegularExpression::UseUnicodePropertiesOption));
                     if(!hasAll)
                         break;
                 }
@@ -382,7 +382,7 @@ QList<BibleSearch> Bible::searchBible(bool allWords, QRegularExpression searchEx
                 bool hasAll = false;
                 for (int j(0);j<stl.count();++j)
                 {
-                    hasAll = bv.verseText.contains(QRegularExpression("\\b"+stl.at(j)+"\\b",QRegularExpression::CaseInsensitiveOption));
+                    hasAll = bv.verseText.contains(QRegularExpression("\\b"+stl.at(j)+"\\b",QRegularExpression::CaseInsensitiveOption | QRegularExpression::UseUnicodePropertiesOption));
                     if(!hasAll)
                         break;
                 }

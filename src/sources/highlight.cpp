@@ -158,7 +158,7 @@ void HighlightSearch::setHighlightText(QString text)
     HighlightingRule rule;
     highlightingRules.clear();
     resultFormat.setForeground(Qt::red);
-    rule.pattern = QRegularExpression(text,QRegularExpression::CaseInsensitiveOption);
+    rule.pattern = QRegularExpression(text, QRegularExpression::CaseInsensitiveOption | QRegularExpression::UseUnicodePropertiesOption);
     rule.format = resultFormat;
     highlightingRules.append(rule);
 }
