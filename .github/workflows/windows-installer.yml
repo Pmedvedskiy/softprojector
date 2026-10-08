@@ -29,7 +29,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Determine version
         id: ver
@@ -52,12 +52,13 @@ jobs:
           arch: win64_msvc2022_64
           modules: 'qtmultimedia'
 
-      - name: Set up MSVC
-        uses: ilammy/msvc-dev-cmd@v1
-
       - name: Build (release)
         shell: cmd
+        # Enter the MSVC environment in the same step: vcvars64 only sets
+        # variables for this shell, and no third-party action is needed.
         run: |
+          for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath`) do set "VSPATH=%%i"
+          call "%VSPATH%\VC\Auxiliary\Build\vcvars64.bat" || exit /b 1
           cd src
           qmake softProjector.pro CONFIG+=release
           nmake
@@ -83,7 +84,7 @@ jobs:
           "%ProgramFiles(x86)%\Inno Setup 6\ISCC.exe" /DAppVersion=${{ steps.ver.outputs.version }} packaging\windows\softprojector.iss
 
       - name: Upload installer artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: SoftProjector_${{ steps.ver.outputs.version }}_WinInstaller
           path: packaging/windows/output/*.exe
@@ -91,6 +92,6 @@ jobs:
 
       - name: Attach installer to GitHub Release
         if: github.event_name == 'push'
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: packaging/windows/output/*.exe
