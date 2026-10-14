@@ -59,6 +59,10 @@ jobs:
         run: |
           for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath`) do set "VSPATH=%%i"
           call "%VSPATH%\VC\Auxiliary\Build\vcvars64.bat" || exit /b 1
+          rem windeployqt --compiler-runtime runs in a later step and needs
+          rem VCINSTALLDIR to find vc_redist.x64.exe, so export it.
+          echo VCINSTALLDIR=%VCINSTALLDIR%>>"%GITHUB_ENV%"
+          echo VCToolsRedistDir=%VCToolsRedistDir%>>"%GITHUB_ENV%"
           cd src
           qmake softProjector.pro CONFIG+=release
           nmake
@@ -66,7 +70,13 @@ jobs:
       - name: Deploy Qt runtime (windeployqt)
         shell: cmd
         run: |
-          windeployqt --release --compiler-runtime --qmldir src\qml src\win32_build\bin\SoftProjector.exe
+          windeployqt --release --compiler-runtime --qmldir src\qml src\win32_build\bin\SoftProjector.exe || exit /b 1
+          rem The installer script skips a missing vc_redist silently, so
+          rem fail here instead of shipping an installer without the runtime.
+          if not exist src\win32_build\bin\vc_redist.x64.exe (
+            echo ::error::windeployqt did not copy vc_redist.x64.exe; is VCINSTALLDIR set?
+            exit /b 1
+          )
 
       - name: Add SoftProjector translations
         shell: cmd
