@@ -84,6 +84,12 @@ jobs:
           if not exist src\win32_build\bin\translations mkdir src\win32_build\bin\translations
           copy /Y src\translations\softpro_*.qm src\win32_build\bin\translations\
 
+      - name: List packaged files
+        # Full manifest with sizes, so a change in installer size can be
+        # explained from the log after the artifact and the runner are gone.
+        shell: cmd
+        run: dir /s /-c src\win32_build\bin
+
       - name: Install Inno Setup
         shell: cmd
         run: choco install innosetup -y --no-progress
