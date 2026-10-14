@@ -6,15 +6,21 @@
 #include <QtTest>
 #include <QtSql>
 #include <QComboBox>
+#include <QImage>
 #include <QLineEdit>
 #include <QListWidget>
+#include <QPainter>
 #include <QPushButton>
+#include <QStyleOptionViewItem>
 #include <QTextDocument>
 #include <QTextLayout>
+
+#include <functional>
 
 #include "song.hpp"        // clean()
 #include "bible.hpp"
 #include "biblewidget.hpp"
+#include "highlight.hpp"
 
 namespace {
 
@@ -55,6 +61,7 @@ private slots:
     void bibleAllWordsSearchMatchesLatin();
 
     void highlighterMarksCyrillicWholeWord();
+    void resultDelegateDrawsSharpOnScaledScreens();
 
     void bibleWidgetSearch_data();
     void bibleWidgetSearch();
@@ -139,6 +146,52 @@ void SearchTest::highlighterMarksCyrillicWholeWord()
     QCOMPARE(marks.count(), 1);
     QCOMPARE(marks.first().start, doc.toPlainText().indexOf("Бог"));
     QCOMPARE(marks.first().length, 3);
+}
+
+void SearchTest::resultDelegateDrawsSharpOnScaledScreens()
+{
+    // The results list paints through HighlighterDelegate so matches show in
+    // red. On a scaled screen (Windows display scaling, or the UI scale
+    // setting) the paint device has a device pixel ratio above 1, and the
+    // delegate must draw the text at that resolution. Rendering into a
+    // QPixmap of rect.size() and drawing that produced a 1x image scaled up,
+    // which looked blurry on the church PC. The reference is the same text
+    // drawn straight onto the device.
+    struct Probe : HighlighterDelegate {
+        using HighlighterDelegate::drawDisplay;
+    };
+
+    const QString text = "Бытие 1:1 В начале сотворил Бог небо и землю.";
+    const QRect rect(5, 3, 400, 24);
+    const qreal dpr = 2.0;
+
+    auto render = [&](const std::function<void(QPainter &)> &draw) {
+        QImage image(QSize(420, 30) * dpr, QImage::Format_ARGB32_Premultiplied);
+        image.setDevicePixelRatio(dpr);
+        image.fill(Qt::white);
+        QPainter p(&image);
+        draw(p);
+        return image;
+    };
+
+    QImage blank = render([](QPainter &) {});
+
+    QTextDocument doc;
+    doc.setDocumentMargin(0);
+    doc.setPlainText(text);
+    QImage expected = render([&](QPainter &p) {
+        p.translate(rect.topLeft());
+        doc.drawContents(&p, QRectF(QPointF(), rect.size()));
+    });
+    QVERIFY2(expected != blank, "reference render drew nothing");
+
+    Probe delegate;
+    QImage actual = render([&](QPainter &p) {
+        delegate.drawDisplay(&p, QStyleOptionViewItem(), rect, text);
+    });
+    QVERIFY2(actual != blank, "delegate drew nothing");
+    QVERIFY2(actual == expected,
+             "delegate output differs from a direct render at the device pixel ratio");
 }
 
 void SearchTest::bibleWidgetSearch_data()

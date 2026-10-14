@@ -179,11 +179,12 @@ void HighlighterDelegate::drawDisplay(QPainter *painter, const QStyleOptionViewI
     textDocument->setDocumentMargin(0);
     textDocument->setPlainText(text);
 
-    QPixmap pixmap(rect.size());
-    pixmap.fill(Qt::transparent);
-    QPainter p(&pixmap);
-
-    textDocument->drawContents(&p);
-
-    painter->drawPixmap(rect, pixmap);
+    // Draw straight onto the view so the text is rendered at the screen's
+    // device pixel ratio. Going through a QPixmap of rect.size() produced a
+    // 1x image that was scaled up on high-DPI or UI-scaled screens and
+    // looked blurry.
+    painter->save();
+    painter->translate(rect.topLeft());
+    textDocument->drawContents(painter, QRectF(QPointF(), rect.size()));
+    painter->restore();
 }
